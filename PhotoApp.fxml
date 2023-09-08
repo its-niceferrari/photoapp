@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.niceferrari.photoapp.PhotoController">
+  <MenuBar VBox.vgrow="NEVER">
+    <Menu mnemonicParsing="false" text="File">
+      <MenuItem fx:id="openButton" mnemonicParsing="false" onAction="#openButtonClick" text="Open…"/>
+      <MenuItem fx:id="closeButton" mnemonicParsing="false" onAction="#closeButtonClick" text="Close"/>
+      <MenuItem fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonClick" text="Save"/>
+      <MenuItem fx:id="saveAsButton" mnemonicParsing="false" onAction="#saveAsButtonClick" text="Save As…"/>
+      <SeparatorMenuItem mnemonicParsing="false"/>
+      <MenuItem fx:id="quitButton" mnemonicParsing="false" onAction="#quitButtonClick" text="Quit"/>
+    </Menu>
+  </MenuBar>
+  <AnchorPane VBox.vgrow="ALWAYS">
+    <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" textAlignment="CENTER" textFill="#9f9f9f">
+      <font>
+        <Font size="18.0"/>
+      </font>
+    </Label>
+    <ImageView fx:id="imageView" fitHeight="340.0" fitWidth="613.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true"
+               preserveRatio="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0"
+               AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0"/>
+  </AnchorPane>
+</VBox>
