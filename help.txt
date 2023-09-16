@@ -1,0 +1,21 @@
+PhotoApp Help
+GitHub: https://github.com/its-niceferrari/photoapp
+======================================================
+
+Opening an Image
+1. Select "Open" from the File menu.
+2. Navigate to the desired image location.
+3. Select the file and click "Open."
+
+Saving an Image
+1. Select "Save" or "Save As" from the File menu.
+2. If you choose "Save As," specify a name and location for the image.
+3. Click "Save."
+
+Drawing on the Image
+- Pen Size: Click the dropdown menu to change the pen size.
+- Pen Color: Click on the color picker in the toolbar to change the color of the pen.
+
+
+
+

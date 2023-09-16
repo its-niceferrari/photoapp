@@ -2,20 +2,22 @@ PhotoApp Release Notes
 GitHub: https://github.com/its-niceferrari/photoapp
 ======================================================
 
-Version 1.0.0 -  09/08/2023
+Version 1.1.0 - 09/15/2023
 
 New Features:
+
+- Ability to draw lines on an image
+- Options for changing pen color and width
+- Quick links for help and release notes
+
+------------------------------------------------------
+
+Version 1.0.0 - 09/08/2023
+
+New Features:
+
 - Ability to open and close common image file formats within the application
 - Save and Save As functionality
 - Menu bar implementation for common application tasks
-
-Known Bugs:
-- Issue with saving an image that has a space in the filename
-
-Expected Next Sprint:
-- Ability to draw lines on an image
-- Line color and width options
-- Adjustable canvas size
-- Help menu
 
 
