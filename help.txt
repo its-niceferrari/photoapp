@@ -13,8 +13,18 @@ Saving an Image
 3. Click "Save."
 
 Drawing on the Image
+- Draw Mode: Click the dropdown menu to select between pen, line, and shape mode.
+
 - Pen Size: Click the dropdown menu to change the pen size.
 - Pen Color: Click on the color picker in the toolbar to change the color of the pen.
+- Eyedropper: Click on the eyedropper tool to pick color from any open image in the application.
+
+- Shapes: Click on the dropdown to select from various shape to draw.
+
+Resizing the Image
+1. Enter the desired width and height dimensions into the text boxes.
+2. Click "Resize".
+
 
 
 

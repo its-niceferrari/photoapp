@@ -2,7 +2,9 @@
 
 <?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
@@ -10,57 +12,144 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
-<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.niceferrari.photoapp.PhotoController">
+<VBox prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.niceferrari.photoapp.PhotoController">
   <MenuBar VBox.vgrow="NEVER">
     <Menu mnemonicParsing="false" text="File">
-      <MenuItem fx:id="openButton" mnemonicParsing="false" onAction="#openButtonClick" text="Open…" />
-      <MenuItem fx:id="closeButton" mnemonicParsing="false" onAction="#closeButtonClick" text="Close" />
-      <MenuItem fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonClick" text="Save" />
-      <MenuItem fx:id="saveAsButton" mnemonicParsing="false" onAction="#saveAsButtonClick" text="Save As…" />
+      <MenuItem fx:id="openButton" mnemonicParsing="false" onAction="#openButtonClick" text="Open…">
+            <accelerator>
+               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+            </accelerator></MenuItem>
+      <MenuItem fx:id="closeButton" mnemonicParsing="false" onAction="#closeButtonClick" text="Close">
+            <accelerator>
+               <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+            </accelerator></MenuItem>
+      <MenuItem fx:id="saveButton" mnemonicParsing="false" onAction="#saveButtonClick" text="Save">
+            <accelerator>
+               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+            </accelerator></MenuItem>
+      <MenuItem fx:id="saveAsButton" mnemonicParsing="false" onAction="#saveAsButtonClick" text="Save As…">
+            <accelerator>
+               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+            </accelerator></MenuItem>
       <SeparatorMenuItem mnemonicParsing="false" />
-      <MenuItem fx:id="quitButton" mnemonicParsing="false" onAction="#quitButtonClick" text="Quit" />
+      <MenuItem fx:id="quitButton" mnemonicParsing="false" onAction="#quitButtonClick" text="Quit">
+            <accelerator>
+               <KeyCodeCombination alt="DOWN" code="F4" control="UP" meta="UP" shift="UP" shortcut="UP" />
+            </accelerator></MenuItem>
     </Menu>
-      <Menu mnemonicParsing="false" text="Edit" />
       <Menu mnemonicParsing="false" text="Help">
-        <MenuItem id="helpButton" mnemonicParsing="false" onAction="#helpButtonClick" text="Help" />
+         <MenuItem id="laughButton" mnemonicParsing="false" onAction="#laughButtonClick" text="Make Me Laugh" />
+        <MenuItem id="helpButton" mnemonicParsing="false" onAction="#helpButtonClick" text="Help">
+            <accelerator>
+               <KeyCodeCombination alt="UP" code="F1" control="UP" meta="ANY" shift="UP" shortcut="UP" />
+            </accelerator></MenuItem>
         <MenuItem id="aboutButton" mnemonicParsing="false" onAction="#aboutButtonClick" text="About" />
       </Menu>
   </MenuBar>
   <ToolBar prefHeight="40.0" prefWidth="200.0">
-    <ChoiceBox fx:id="choiceBox" onAction="#handlePenSizeChange" prefWidth="50.0">
-      <items>
-        <FXCollections fx:factory="observableArrayList">
-          <String fx:value="1" />
-          <String fx:value="2" />
-          <String fx:value="3" />
-          <String fx:value="4" />
-          <String fx:value="5" />
-          <String fx:value="6" />
-          <String fx:value="8" />
-          <String fx:value="10" />
-        </FXCollections>
-      </items>
-    </ChoiceBox>
-    <ColorPicker fx:id="colorPicker" onAction="#handleColorChange">
-         <value>
-            <Color />
-         </value></ColorPicker>
+      <HBox prefHeight="50.0" prefWidth="121.0" spacing="10.0">
+          <VBox prefHeight="50.0" prefWidth="119.0">
+              <Label text="Draw Mode" />
+              <ChoiceBox fx:id="drawChoiceBox" prefHeight="26.0" prefWidth="154.0">
+                  <items>
+                      <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="Pen" />
+                          <String fx:value="Line" />
+                          <String fx:value="Shape" />
+                      </FXCollections>
+                  </items>
+              </ChoiceBox>
+          </VBox>
+      </HBox>
+      <Separator orientation="VERTICAL" prefHeight="50.0" />
+      <HBox prefHeight="50.0" prefWidth="267.0" spacing="10.0">
+          <VBox prefHeight="50.0" prefWidth="58.0">
+              <Label text="Pen Size" />
+              <ChoiceBox fx:id="penSizeChoiceBox" onAction="#handlePenSizeChange" prefHeight="26.0" prefWidth="58.0">
+                  <items>
+                      <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="1" />
+                          <String fx:value="2" />
+                          <String fx:value="3" />
+                          <String fx:value="4" />
+                          <String fx:value="5" />
+                          <String fx:value="6" />
+                          <String fx:value="8" />
+                          <String fx:value="10" />
+                      </FXCollections>
+                  </items>
+              </ChoiceBox>
+          </VBox>
+          <VBox prefHeight="50.0" prefWidth="105.0">
+              <Label text="Pen Color" />
+              <ColorPicker fx:id="colorPicker" onAction="#handleColorChange">
+                  <value>
+                      <Color />
+                  </value>
+              </ColorPicker>
+          </VBox>
+          <VBox prefHeight="50.0" prefWidth="85.0">
+              <Label />
+              <Button fx:id="eyedropperButton" mnemonicParsing="false" onAction="#eyedropperButtonClick" text="Eyedropper" />
+          </VBox>
+      </HBox>
+      <Separator orientation="VERTICAL" prefHeight="50.0" />
+      <HBox prefHeight="50.0" prefWidth="120.0">
+          <VBox prefHeight="50.0" prefWidth="121.0">
+              <Label text="Shape" />
+              <ChoiceBox fx:id="shapeChoiceBox" prefHeight="26.0" prefWidth="125.0">
+                  <items>
+                      <FXCollections fx:factory="observableArrayList">
+                          <String fx:value="Square" />
+                          <String fx:value="Rectangle" />
+                          <String fx:value="Circle" />
+                          <String fx:value="Ellipse" />
+                          <String fx:value="Triangle" />
+                      </FXCollections>
+                  </items>
+              </ChoiceBox>
+
+
+          </VBox>
+      </HBox>
+      <Separator orientation="VERTICAL" prefHeight="50.0" />
+      <HBox prefHeight="50.0" prefWidth="265.0" spacing="10.0">
+          <VBox prefHeight="50.0" prefWidth="90.0">
+              <Label text="Canvas Width" />
+              <TextField fx:id="widthField" prefHeight="26.0" prefWidth="104.0" />
+          </VBox>
+          <VBox prefHeight="50.0" prefWidth="90.0">
+              <Label text="Canvas Height" />
+              <TextField fx:id="heightField" prefHeight="26.0" prefWidth="63.0" />
+          </VBox>
+          <VBox prefHeight="50.0" prefWidth="83.0">
+              <Label />
+              <Button fx:id="resizeButton" mnemonicParsing="false" onAction="#resizeButtonClick" prefHeight="26.0" prefWidth="59.0" text="Resize">
+                <VBox.margin>
+                    <Insets />
+                </VBox.margin>
+              </Button>
+          </VBox>
+      </HBox>
   </ToolBar>
-  <AnchorPane fx:id="anchorPane" prefHeight="236.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
-    <Label alignment="CENTER" layoutX="155.0" layoutY="177.0" style="&#10;" textAlignment="CENTER" textFill="#9f9f9f">
-      <font>
-        <Font size="18.0" />
-      </font>
-    </Label>
-    <ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
-      <Canvas fx:id="canvas" height="373.0" layoutX="7.0" width="640.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-    </ScrollPane>
-  </AnchorPane>
+
+  <ScrollPane prefHeight="655.0" prefWidth="1280.0">
+    <AnchorPane fx:id="anchorPane" VBox.vgrow="ALWAYS">
+      <Canvas fx:id="canvas" height="720.0" width="1280.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    </AnchorPane>
+  </ScrollPane>
+
+        <ToolBar prefHeight="40.0" prefWidth="200.0">
+    <Label fx:id="statusLabel" text="No file currently open." />
+  </ToolBar>
 </VBox>

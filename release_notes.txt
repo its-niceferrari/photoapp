@@ -2,6 +2,22 @@ PhotoApp Release Notes
 GitHub: https://github.com/its-niceferrari/photoapp
 ======================================================
 
+Version 2.0.0 - 09/22/2023
+
+New Features:
+
+- Ability to manually resize the canvas dimensions
+- Eyedropper functionality
+- Ability to draw straight lines
+- Ability to draw shapes
+- Added keyboard shortcuts for options in the menu bar
+- Application will now display an alert window when trying to close with unsaved changes
+- Cleaned up options in the drawing toolbar
+- Fixed an issue with the scroll bar not appearing when the canvas is larger than the window
+- Added a hidden easter egg!
+
+------------------------------------------------------
+
 Version 1.1.0 - 09/15/2023
 
 New Features:
