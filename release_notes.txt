@@ -2,6 +2,21 @@ PhotoApp Release Notes
 GitHub: https://github.com/its-niceferrari/photoapp
 ======================================================
 
+Version 2.1.0 - 10/01/2023
+
+New Features:
+- Ability to undo and redo changes
+- Ability to draw regular polygons with a specified number of sides
+- Ability to add user-defined text to an image
+- Ability to select parts of an image
+- Selections can utilize the clipboard for copy/paste operations
+- Selections can be moved across the canvas
+- Added an eraser tool as a pen mode option
+- Improved the triangle shape functionality
+- Fixed a bug where the unsaved changes dialog does not appear if closing through the file menu
+
+------------------------------------------------------
+
 Version 2.0.0 - 09/22/2023
 
 New Features:

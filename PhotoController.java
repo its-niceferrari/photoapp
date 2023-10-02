@@ -5,67 +5,84 @@ import java.awt.image.BufferedImage;
 
 import javafx.embed.swing.SwingFXUtils;
 
-import javafx.fxml.FXML;
-
 import javax.imageio.ImageIO;
 
 import java.io.File;
 import java.io.IOException;
 
+import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 
+import javafx.scene.shape.ArcType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.util.Random;
 
-public class PhotoController {
-    @FXML
-    public ColorPicker colorPicker;
-    @FXML
-    public TextField widthField;
-    @FXML
-    public TextField heightField;
-    @FXML
-    public Label statusLabel;
-    @FXML
-    public Button eyedropperButton;
-    @FXML
-    public Canvas canvas;
-    @FXML
-    public AnchorPane anchorPane;
-    @FXML
-    public ChoiceBox drawChoiceBox;
-    @FXML
-    public ChoiceBox penSizeChoiceBox;
-    @FXML
-    public ChoiceBox shapeChoiceBox;
+import javafx.scene.text.Font;
 
+public class PhotoController {
+
+    public CanvasSnapshot canvasSnapshot;
+    public PaintStack paintStack;
+    public ColorPicker colorPicker;
+    public TextField widthField;
+    public TextField heightField;
+    public Label statusLabel;
+    public Button eyedropperButton;
+    public Canvas canvas;
+    public ChoiceBox drawChoiceBox;
+    public ChoiceBox penSizeChoiceBox;
+    public ChoiceBox shapeChoiceBox;
     public Stage primaryStage = new Stage();
     public GraphicsContext gc;
     public String imagePath;
     public boolean colorPicked = true;
     public double startX, startY, endX, endY;
+    public TabPane tabPane;
+    public TextField textInputField;
+    public ChoiceBox sidesChoiceBox;
+
+    public WritableImage clipboard;
+    public WritableImage tempClipboard;
 
     public void initialize() {
         // Assigns the GraphicsContext associated with this Canvas.
         gc = canvas.getGraphicsContext2D();
+
+        canvasSnapshot = new CanvasSnapshot(canvas);
+        paintStack = new PaintStack();
+
+        // Add a change listener to the selection model of the TabPane
+        tabPane.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldTab, newTab) -> tabSelectionChanged(newTab)
+        );
+
+        // Methods to handle drawing with the mouse.
+        canvas.setOnMousePressed(this::onMousePressed);
+        canvas.setOnMouseDragged(this::onMouseDragged);
+        canvas.setOnMouseReleased(this::onMouseReleased);
 
         // Sets default pen settings.
         gc.setStroke(Color.BLACK);
         colorPicker.setValue(Color.BLACK);
         penSizeChoiceBox.setValue("2");
         gc.setLineWidth(2.0);
+        gc.setFont(Font.font("Arial", 20));
+        gc.setFill(Color.BLACK);
 
         // Sets default values for ChoiceBox.
         drawChoiceBox.setValue("Pen");
@@ -74,19 +91,42 @@ public class PhotoController {
         // Sets the text fields to the current dimensions.
         widthField.setText(String.valueOf(canvas.getWidth()));
         heightField.setText(String.valueOf(canvas.getHeight()));
+    }
 
-        // Methods to handle drawing with the mouse.
-        canvas.setOnMousePressed(this::onMousePressed);
-        canvas.setOnMouseDragged(this::onMouseDragged);
-        canvas.setOnMouseReleased(this::onMouseReleased);
+    private void tabSelectionChanged(Tab selectedTab) {
+        if (selectedTab != null) {
+            Node tabContent = selectedTab.getContent();
 
-        // PhotoApplication.photoStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::exitApplication);
+            if (tabContent instanceof ScrollPane) {
+                ScrollPane scrollPane = (ScrollPane) tabContent;
+                Node anchorPaneNode = scrollPane.getContent();
+
+                if (anchorPaneNode instanceof AnchorPane) {
+                    AnchorPane anchorPane = (AnchorPane) anchorPaneNode;
+
+                    if (!anchorPane.getChildren().isEmpty()) {
+                        Node canvasNode = anchorPane.getChildren().get(0);
+
+                        if (canvasNode instanceof Canvas) {
+                            Canvas selectedCanvas = (Canvas) canvasNode;
+                            gc = selectedCanvas.getGraphicsContext2D();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void onMousePressed(MouseEvent event) {
         // Gets start coordinates.
         startX = event.getX();
         startY = event.getY();
+
+        if (drawChoiceBox.getValue().equals("Text")) {
+            //create text on canvas
+            String textInput = textInputField.getText();
+            gc.fillText(textInput, startX, startY);
+        }
     }
 
     public void onMouseDragged(MouseEvent event) {
@@ -105,11 +145,19 @@ public class PhotoController {
     }
 
     public void onMouseReleased(MouseEvent event) {
-        if (drawChoiceBox.getValue().equals("Line")) {
+        if (drawChoiceBox.getValue().equals("Select")) {
+            double width = Math.abs(endX - startX);
+            double height = Math.abs(endY - startY);
+
+            tempClipboard = new WritableImage((int) width, (int) height);
+            canvas.snapshot(null, clipboard);
+
+        } else if (drawChoiceBox.getValue().equals("Line")) {
             // Gets the second pair of coordinates and draws a straight line between the two.
             endX = event.getX();
             endY = event.getY();
             drawLine(gc);
+
         } else if (drawChoiceBox.getValue().equals("Shape")) {
             // Gets the second pair of coordinates.
             gc.setFill(colorPicker.getValue());
@@ -122,22 +170,60 @@ public class PhotoController {
                 double diffY = Math.abs(endY - startY);
                 double highest = Math.max(diffX, diffY);
                 gc.fillRect(startX, startY, highest, highest);
+
             } else if (shapeChoiceBox.getValue().equals("Rectangle")) {
                 gc.fillRect(startX, startY, endX - startX, endY - startY);
+
             } else if (shapeChoiceBox.getValue().equals("Circle")) {
                 double diffX = Math.abs(endX - startX);
                 double diffY = Math.abs(endY - startY);
                 double highest = Math.max(diffX, diffY);
                 gc.fillOval(startX, startY, highest, highest);
+
             } else if (shapeChoiceBox.getValue().equals("Ellipse")) {
                 gc.fillOval(startX, startY, endX - startX, endY - startY);
+
             } else if (shapeChoiceBox.getValue().equals("Triangle")) {
-                // Define the vertices of the triangle based on mouse positions
-                double[] triangleX = {startX, endX, (startX + endX) / 2};
-                double[] triangleY = {startY, endY, startY};
-                gc.fillPolygon(triangleX, triangleY, 3);
+                // Calculate base and height of the triangle
+                double base = Math.abs(endX - startX);
+                double height = Math.abs(endY - startY);
+
+                // Calculate vertices of the triangle
+                double x1 = startX;
+                double y1 = startY;
+
+                double x2 = startX + base;
+                double y2 = y1;
+
+                double x3 = startX + base / 2;
+                double y3 = startY - height;
+
+                // Draw the filled triangle
+                gc.fillPolygon(new double[]{x1, x2, x3}, new double[]{y1, y2, y3}, 3);
+            } else if (shapeChoiceBox.getValue().equals("Polygon")) {
+                int sides = Integer.parseInt((String) sidesChoiceBox.getValue());
+                int centerX = (int) ((startX + endX) / 2);
+                int centerY = (int) ((startY + endY) / 2);
+                int radius = (int) Math.abs(endX - startX) / 2;
+
+                double[] xPoints = new double[sides];
+                double[] yPoints = new double[sides];
+
+                for (int i = 0; i < sides; i++) {
+                    double angle = 2.0 * Math.PI * i / sides;
+                    xPoints[i] = centerX + radius * Math.cos(angle);
+                    yPoints[i] = centerY + radius * Math.sin(angle);
+                }
+
+                // Draw the filled polygon
+                gc.fillPolygon(xPoints, yPoints, sides);
+            } else if (shapeChoiceBox.getValue().equals("Semi-Circle")) {
+                // Draw the filled half-circle
+                gc.fillArc(startX, startY, endX - startX, endY - startY, 0, 180, ArcType.ROUND);
             }
         }
+        canvasSnapshot = new CanvasSnapshot(canvas);
+        paintStack.pushSnapshot(canvasSnapshot);
     }
 
     public void drawLine(GraphicsContext gc) {
@@ -198,11 +284,10 @@ public class PhotoController {
     public static void exitApplication(Stage photoStage){
         ButtonType cancelButton = new ButtonType("Cancel");
         ButtonType exitButton = new ButtonType("Exit Without Saving");
-        ButtonType saveButton = new ButtonType("Save and Exit");
 
         Alert closeAlert = new Alert(Alert.AlertType.CONFIRMATION,
                 "There are unsaved changes to the image. Do you want to close without saving?",
-                cancelButton, exitButton, saveButton);
+                cancelButton, exitButton);
         closeAlert.setTitle("Unsaved Changes");
 
         photoStage.setOnCloseRequest(e -> {
@@ -213,13 +298,36 @@ public class PhotoController {
             } else if (bt == exitButton) {
                 photoStage.close();
                 System.exit(0);
-            } else if (bt == saveButton) {
-                // saveButtonClick();
-                photoStage.close();
-                System.exit(0);
             }
-
         });
+    }
+
+    public void newButtonClick() {
+        Tab newTab = new Tab("New Tab");
+        Canvas canvas = new Canvas(1280, 720);
+        newTab.setContent(canvas);
+
+        tabPane.getTabs().add(newTab);
+        tabPane.getSelectionModel().select(newTab);
+
+        // Assign the GraphicsContext associated with this Canvas.
+        gc = canvas.getGraphicsContext2D();
+
+        canvasSnapshot = new CanvasSnapshot(canvas);
+        paintStack = new PaintStack();
+
+        // Sets default pen settings.
+        gc.setStroke(Color.BLACK);
+        colorPicker.setValue(Color.BLACK);
+        penSizeChoiceBox.setValue("2");
+        gc.setLineWidth(2.0);
+        gc.setFont(Font.font("Arial", 20));
+        gc.setFill(Color.BLACK);
+
+        // Methods to handle drawing with the mouse.
+        canvas.setOnMousePressed(this::onMousePressed);
+        canvas.setOnMouseDragged(this::onMouseDragged);
+        canvas.setOnMouseReleased(this::onMouseReleased);
     }
 
 
@@ -246,20 +354,35 @@ public class PhotoController {
     }
 
     public void closeButtonClick() {
-        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        statusLabel.setText("No file currently open.");
+        ButtonType cancelButton = new ButtonType("Cancel");
+        ButtonType exitButton = new ButtonType("Exit Without Saving");
+
+        Alert closeAlert = new Alert(Alert.AlertType.CONFIRMATION,
+                "There are unsaved changes to the image. Do you want to close without saving?",
+                cancelButton, exitButton);
+        closeAlert.setTitle("Unsaved Changes");
+
+        ButtonType bt = closeAlert.showAndWait().get();
+        if (bt == exitButton) {
+            //canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            tabPane.getTabs().remove(tabPane.getSelectionModel().getSelectedItem());
+            statusLabel.setText("No file currently open.");
+        }
     }
 
     public void saveButtonClick() {
-        try {
-            // Saves the Canvas to a BufferedImage that can be used to overwrite the existing file.
-            File file = new File(imagePath.substring(5));
-            Image snapshot = canvas.snapshot(null, null);
-            BufferedImage bufferedImage = SwingFXUtils.fromFXImage(snapshot, null);
-            ImageIO.write(bufferedImage, "png", file);
-        } catch (IOException e) {
-            statusLabel.setText("Error encountered when saving image.");
+        if (imagePath != null) {
+            try {
+                // Saves the Canvas to a BufferedImage that can be used to overwrite the existing file.
+                File file = new File(imagePath.substring(5));
+                Image snapshot = canvas.snapshot(null, null);
+                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(snapshot, null);
+                ImageIO.write(bufferedImage, "png", file);
+            } catch (IOException e) {
+                statusLabel.setText("Error encountered when saving image.");
+            }
         }
+        else saveAsButtonClick();
     }
 
     public void saveAsButtonClick() {
@@ -314,5 +437,37 @@ public class PhotoController {
         else if (randomNumber == 2) statusLabel.setText("I'm trying to teach my cat Java programming...But he" +
                 "keeps complaining about a NullLaserPointerException.");
         else statusLabel.setText("Why do Java developers wear glasses? Because they can't C sharp!");
+    }
+
+    public void undoButtonClick(ActionEvent actionEvent) {
+        if (paintStack.canUndo()) {
+            canvasSnapshot = paintStack.popUndo();
+            canvasSnapshot.restoreSnapshot(canvas);
         }
+    }
+
+    public void redoButtonClick(ActionEvent actionEvent) {
+        if (paintStack.canRedo()) {
+            canvasSnapshot = paintStack.popRedo();
+            canvasSnapshot.restoreSnapshot(canvas);
+        }
+    }
+
+    public void copyButtonClick(ActionEvent actionEvent) {
+        clipboard = new WritableImage(tempClipboard.getPixelReader(), (int) tempClipboard.getWidth(), (int) tempClipboard.getHeight());
+    }
+
+    public void pasteButtonClick(ActionEvent actionEvent) {
+        if (clipboard != null) {
+            System.out.println(clipboard);
+            System.out.println(tempClipboard);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.drawImage(clipboard, 0,0);
+        }
+    }
+
+    public void clearButtonClick(ActionEvent actionEvent) {
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
 }
+
