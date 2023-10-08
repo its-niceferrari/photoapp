@@ -2,6 +2,16 @@ PhotoApp Release Notes
 GitHub: https://github.com/its-niceferrari/photoapp
 ======================================================
 
+Version 2.1.1 - 10/08/2023
+
+New Features:
+
+- Added a timer that will automatically save the image every 5 minutes
+- Added a warning that will display when saving an image in a compressed file format
+- Fixed a bug when saving as a different image format
+
+------------------------------------------------------
+
 Version 2.1.0 - 10/01/2023
 
 New Features:

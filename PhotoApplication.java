@@ -11,9 +11,14 @@ import java.io.IOException;
 public class PhotoApplication extends Application {
 
     public Stage photoStage;
+    public PhotoController photoController;
+    public FileOperation fileOperation;
 
     @Override
     public void start(Stage stage) throws IOException {
+        photoController = new PhotoController();
+        fileOperation = new FileOperation();
+
         photoStage = stage;
         FXMLLoader fxmlLoader = new FXMLLoader(PhotoApplication.class.getResource("PhotoApp.fxml"));
         Scene scene = new Scene(fxmlLoader.load());

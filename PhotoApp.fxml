@@ -93,7 +93,11 @@
       </Menu>
   </MenuBar>
   <ToolBar prefHeight="40.0" prefWidth="200.0">
-      <VBox prefHeight="100.0" prefWidth="1096.0">
+      <VBox prefHeight="75.0" prefWidth="1024.0">
+          <HBox prefHeight="25.0" prefWidth="1009.0">
+              <Label fx:id="timerLabel" text ="Time Until Autosave (in seconds): "/>
+              <Label fx:id="timerCountdown" text="300"/>
+          </HBox>
           <HBox prefHeight="50.0" prefWidth="498.0">
               <HBox prefHeight="50.0" prefWidth="121.0" spacing="10.0">
                   <VBox prefHeight="50.0" prefWidth="119.0">
@@ -191,32 +195,28 @@
               <HBox prefHeight="50.0" prefWidth="160.0">
                   <VBox prefHeight="50.0" prefWidth="178.0">
                       <Label text="Text" />
-                      <TextField fx:id="textInputField" />
+                      <TextField fx:id="textInputField" prefHeight="26.0" prefWidth="142.0" />
                   </VBox>
               </HBox>
-          </HBox>
-          <HBox prefHeight="50.0" prefWidth="200.0">
-              <children>
-                <Separator orientation="VERTICAL" prefHeight="50.0" />
-                <HBox prefHeight="50.0" prefWidth="265.0" spacing="10.0">
-                    <VBox prefHeight="50.0" prefWidth="90.0">
-                        <Label text="Canvas Width" />
-                        <TextField fx:id="widthField" prefHeight="26.0" prefWidth="104.0" />
-                    </VBox>
-                    <VBox prefHeight="50.0" prefWidth="90.0">
-                        <Label text="Canvas Height" />
-                        <TextField fx:id="heightField" prefHeight="26.0" prefWidth="63.0" />
-                    </VBox>
-                    <VBox prefHeight="50.0" prefWidth="83.0">
-                        <Label />
-                        <Button fx:id="resizeButton" mnemonicParsing="false" onAction="#resizeButtonClick" prefHeight="26.0" prefWidth="59.0" text="Resize">
-                            <VBox.margin>
-                                <Insets />
-                            </VBox.margin>
-                        </Button>
-                    </VBox>
-                </HBox>
-              </children>
+            <Separator orientation="VERTICAL" prefHeight="50.0" />
+             <HBox prefHeight="50.0" prefWidth="265.0" spacing="10.0">
+                 <VBox prefHeight="50.0" prefWidth="90.0">
+                     <Label text="Canvas Width" />
+                     <TextField fx:id="widthField" prefHeight="26.0" prefWidth="104.0" />
+                 </VBox>
+                 <VBox prefHeight="50.0" prefWidth="90.0">
+                     <Label text="Canvas Height" />
+                     <TextField fx:id="heightField" prefHeight="26.0" prefWidth="63.0" />
+                 </VBox>
+                 <VBox prefHeight="50.0" prefWidth="83.0">
+                     <Label />
+                     <Button fx:id="resizeButton" mnemonicParsing="false" onAction="#resizeButtonClick" prefHeight="26.0" prefWidth="59.0" text="Resize">
+                         <VBox.margin>
+                             <Insets />
+                         </VBox.margin>
+                     </Button>
+                 </VBox>
+             </HBox>
           </HBox>
       </VBox>
   </ToolBar>
@@ -230,8 +230,4 @@
             </ScrollPane>
         </Tab>
     </TabPane>
-
-        <ToolBar prefHeight="40.0" prefWidth="200.0">
-    <Label fx:id="statusLabel" text="No file currently open." />
-  </ToolBar>
 </VBox>
