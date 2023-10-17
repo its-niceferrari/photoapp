@@ -2,6 +2,19 @@ PhotoApp Release Notes
 GitHub: https://github.com/its-niceferrari/photoapp
 ======================================================
 
+Version 2.2.0 - 10/16/2023
+
+New Features:
+
+- Ability to rotate an image in 90 degree increments
+- Ability to flip an image horizontally	or vertically
+- Replaced text buttons with icons
+- Added autosave notifications
+- Added tool tips that will show what a button does on hover
+- Implemented threaded logging
+
+------------------------------------------------------
+
 Version 2.1.1 - 10/08/2023
 
 New Features:

@@ -18,6 +18,9 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -30,7 +33,8 @@
         <MenuItem fx:id="newButton" mnemonicParsing="false" onAction="#newButtonClick" text="New">
             <accelerator>
                 <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-            </accelerator></MenuItem>
+            </accelerator>
+        </MenuItem>
         <MenuItem fx:id="openButton" mnemonicParsing="false" onAction="#openButtonClick" text="Open…">
             <accelerator>
                <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -93,16 +97,19 @@
       </Menu>
   </MenuBar>
   <ToolBar prefHeight="40.0" prefWidth="200.0">
-      <VBox prefHeight="75.0" prefWidth="1024.0">
+      <VBox prefHeight="75.0" prefWidth="1127.0">
           <HBox prefHeight="25.0" prefWidth="1009.0">
-              <Label fx:id="timerLabel" text ="Time Until Autosave (in seconds): "/>
-              <Label fx:id="timerCountdown" text="300"/>
+              <Label fx:id="timerLabel" text="Time Until Autosave (in seconds): " />
+              <Label fx:id="timerCountdown" text="300" />
           </HBox>
-          <HBox prefHeight="50.0" prefWidth="498.0">
+          <HBox prefHeight="50.0" prefWidth="1137.0">
               <HBox prefHeight="50.0" prefWidth="121.0" spacing="10.0">
                   <VBox prefHeight="50.0" prefWidth="119.0">
                       <Label text="Draw Mode" />
                       <ChoiceBox fx:id="drawChoiceBox" prefHeight="26.0" prefWidth="154.0">
+                          <tooltip>
+                              <Tooltip text="Select a drawing tool." />
+                          </tooltip>
                           <items>
                               <FXCollections fx:factory="observableArrayList">
                                   <String fx:value="Select" />
@@ -117,10 +124,13 @@
                   </VBox>
               </HBox>
               <Separator orientation="VERTICAL" prefHeight="50.0" />
-              <HBox prefHeight="50.0" prefWidth="267.0" spacing="10.0">
+              <HBox prefHeight="50.0" prefWidth="223.0" spacing="10.0">
                   <VBox prefHeight="50.0" prefWidth="58.0">
                       <Label text="Pen Size" />
                       <ChoiceBox fx:id="penSizeChoiceBox" onAction="#handlePenSizeChange" prefHeight="26.0" prefWidth="58.0">
+                          <tooltip>
+                              <Tooltip text="Select a pen size." />
+                          </tooltip>
                           <items>
                               <FXCollections fx:factory="observableArrayList">
                                   <String fx:value="1" />
@@ -143,14 +153,26 @@
                   <VBox prefHeight="50.0" prefWidth="105.0">
                       <Label text="Pen Color" />
                       <ColorPicker fx:id="colorPicker" onAction="#handleColorChange">
+                          <tooltip>
+                              <Tooltip text="Select a color." />
+                          </tooltip>
                           <value>
                               <Color />
                           </value>
                       </ColorPicker>
                   </VBox>
-                  <VBox prefHeight="50.0" prefWidth="85.0">
+                  <VBox prefHeight="50.0" prefWidth="36.0">
                       <Label />
-                      <Button fx:id="eyedropperButton" mnemonicParsing="false" onAction="#eyedropperButtonClick" text="Eyedropper" />
+                      <Button fx:id="eyedropperButton" mnemonicParsing="false" onAction="#eyedropperButtonClick">
+                          <tooltip>
+                              <Tooltip text="Pick a color from the canvas." />
+                          </tooltip>
+                          <graphic>
+                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                             <Image url="@eyedropper.png" />
+                         </ImageView>
+                     </graphic>
+                      </Button>
                   </VBox>
               </HBox>
               <Separator orientation="VERTICAL" prefHeight="50.0" />
@@ -158,6 +180,9 @@
                   <VBox prefHeight="50.0" prefWidth="151.0">
                       <Label text="Shape" />
                       <ChoiceBox fx:id="shapeChoiceBox" prefHeight="26.0" prefWidth="115.0">
+                          <tooltip>
+                              <Tooltip text="Select a shape to draw." />
+                          </tooltip>
                           <items>
                               <FXCollections fx:factory="observableArrayList">
                                   <String fx:value="Square" />
@@ -170,12 +195,13 @@
                               </FXCollections>
                           </items>
                       </ChoiceBox>
-
-
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                       <Label text="Sides" />
                       <ChoiceBox fx:id="sidesChoiceBox" prefHeight="26.0" prefWidth="56.0">
+                          <tooltip>
+                              <Tooltip text="Select the number of sides when drawing a custom polygon." />
+                          </tooltip>
                           <items>
                               <FXCollections fx:factory="observableArrayList">
                                   <String fx:value="5" />
@@ -195,11 +221,15 @@
               <HBox prefHeight="50.0" prefWidth="160.0">
                   <VBox prefHeight="50.0" prefWidth="178.0">
                       <Label text="Text" />
-                      <TextField fx:id="textInputField" prefHeight="26.0" prefWidth="142.0" />
+                      <TextField fx:id="textInputField" prefHeight="26.0" prefWidth="142.0">
+                            <tooltip>
+                                <Tooltip text="Enter text to be inserted." />
+                            </tooltip>
+                      </TextField>
                   </VBox>
               </HBox>
             <Separator orientation="VERTICAL" prefHeight="50.0" />
-             <HBox prefHeight="50.0" prefWidth="265.0" spacing="10.0">
+             <HBox prefHeight="50.0" prefWidth="392.0" spacing="10.0">
                  <VBox prefHeight="50.0" prefWidth="90.0">
                      <Label text="Canvas Width" />
                      <TextField fx:id="widthField" prefHeight="26.0" prefWidth="104.0" />
@@ -208,12 +238,72 @@
                      <Label text="Canvas Height" />
                      <TextField fx:id="heightField" prefHeight="26.0" prefWidth="63.0" />
                  </VBox>
-                 <VBox prefHeight="50.0" prefWidth="83.0">
+                 <VBox prefHeight="50.0" prefWidth="40.0">
                      <Label />
-                     <Button fx:id="resizeButton" mnemonicParsing="false" onAction="#resizeButtonClick" prefHeight="26.0" prefWidth="59.0" text="Resize">
+                     <Button fx:id="resizeButton" mnemonicParsing="false" onAction="#resizeButtonClick" prefHeight="26.0" prefWidth="32.0">
+                         <tooltip>
+                             <Tooltip text="Resizes the canvas to the given dimensions in the text boxes." />
+                         </tooltip>
                          <VBox.margin>
                              <Insets />
                          </VBox.margin>
+                     <graphic>
+                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                             <Image url="@crop.png" />
+                         </ImageView>
+                     </graphic>
+                     </Button>
+                 </VBox>
+               <VBox prefHeight="50.0" prefWidth="40.0">
+                  <children>
+                     <Label />
+                     <Button fx:id="rotateButton" mnemonicParsing="false" onAction="#rotateButtonClick" prefHeight="26.0" prefWidth="32.0">
+                        <tooltip>
+                           <Tooltip text="Rotates the canvas by 90 degrees." />
+                        </tooltip>
+                        <VBox.margin>
+                           <Insets />
+                        </VBox.margin>
+                        <graphic>
+                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@rotate.png" />
+                            </ImageView>
+                        </graphic>
+                     </Button>
+                  </children>
+               </VBox>
+                 <VBox prefHeight="50.0" prefWidth="40.0">
+                     <Label/>
+                     <Button fx:id="horizontalButton1" mnemonicParsing="false" onAction="#horizontalButtonClick"
+                             prefHeight="26.0" prefWidth="32.0">
+                         <tooltip>
+                             <Tooltip text="Flips the canvas horizontally."/>
+                         </tooltip>
+                         <VBox.margin>
+                             <Insets/>
+                         </VBox.margin>
+                         <graphic>
+                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@horizontal.png"/>
+                             </ImageView>
+                         </graphic>
+                     </Button>
+                 </VBox>
+                 <VBox prefHeight="50.0" prefWidth="40.0">
+                     <Label/>
+                     <Button fx:id="verticalButton" mnemonicParsing="false" onAction="#verticalButtonClick"
+                             prefHeight="26.0" prefWidth="32.0">
+                         <tooltip>
+                             <Tooltip text="Flips the canvas vertically."/>
+                         </tooltip>
+                         <VBox.margin>
+                             <Insets/>
+                         </VBox.margin>
+                         <graphic>
+                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                 <Image url="@vertical.png"/>
+                             </ImageView>
+                         </graphic>
                      </Button>
                  </VBox>
              </HBox>

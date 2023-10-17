@@ -27,6 +27,8 @@ import java.util.Random;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+import org.controlsfx.control.Notifications;
+
 public class PhotoController {
 
     public CanvasSnapshot canvasSnapshot;
@@ -35,6 +37,7 @@ public class PhotoController {
     public PaintStack paintStack;
     public PenDraw penDraw;
     public ShapeDraw shapeDraw;
+    public TextFileWriter textFileWriter;
 
     public ColorPicker colorPicker;
     public TextField widthField;
@@ -62,6 +65,7 @@ public class PhotoController {
     private static final int AUTO_SAVE_INTERVAL_SECONDS = 300;
     private int countdownSeconds = AUTO_SAVE_INTERVAL_SECONDS;
     private int tempSaveCount = 0;
+    private int rotationDegrees = 0;
 
 
     /**
@@ -103,12 +107,20 @@ public class PhotoController {
         paintStack = new PaintStack();
         penDraw = new PenDraw();
         shapeDraw = new ShapeDraw();
+        textFileWriter = new TextFileWriter();
 
         // Creates a timeline that triggers the autosave every 5 minutes.
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 countdownSeconds--;
+
+                if (countdownSeconds == 60) {
+                    Notifications.create()
+                            .title("Auto Save Reminder")
+                            .text("The image will be auto-saved in 1 minute.")
+                            .showInformation();
+                }
 
                 if (countdownSeconds <= 0) {
                     // Resets the countdown and perform autosave.
@@ -163,6 +175,7 @@ public class PhotoController {
 
     private void tabSelectionChanged(Tab selectedTab) {
         gc = tabOperation.tabSelectionChanged(selectedTab, gc);
+        textFileWriter.writeMessageToFile("Tab selection changed to " + selectedTab.getText());
     }
 
     public void onMousePressed(MouseEvent event) {
@@ -174,6 +187,7 @@ public class PhotoController {
             // Draws text on the Canvas.
             String textInput = textInputField.getText();
             gc.fillText(textInput, startX, startY);
+            textFileWriter.writeMessageToFile("Text drawn on the Canvas.");
         }
     }
 
@@ -224,12 +238,14 @@ public class PhotoController {
 
             tempClipboard = new WritableImage((int) width, (int) height);
             canvas.snapshot(null, clipboard);
-
+            textFileWriter.writeMessageToFile("Selected area copied to clipboard.");
         } else if (drawChoiceBox.getValue().equals("Line")) {
             // Draws a straight line between two points.
             endX = event.getX();
             endY = event.getY();
             penDraw.drawLine(startX, startY, endX, endY, gc);
+            textFileWriter.writeMessageToFile("Line drawn on the Canvas.");
+
         } else if (drawChoiceBox.getValue().equals("Shape")) {
             // Gets the second pair of coordinates.
             gc.setFill(colorPicker.getValue());
@@ -258,6 +274,7 @@ public class PhotoController {
             } else if (shapeChoiceBox.getValue().equals("Semi-Circle")) {
                 shapeDraw.drawSemiCircle(startX, startY, endX, endY, gc);
             }
+            textFileWriter.writeMessageToFile("Shape drawn on the Canvas.");
         }
         canvasSnapshot = new CanvasSnapshot(canvas);
         paintStack.pushSnapshot(canvasSnapshot);
@@ -266,11 +283,13 @@ public class PhotoController {
     public void handlePenSizeChange() {
         String selectedPenSize = (String) penSizeChoiceBox.getValue();
         penDraw.handlePenSizeChange(selectedPenSize, gc);
+        textFileWriter.writeMessageToFile("Pen size changed to " + selectedPenSize + ".");
     }
 
     public void handleColorChange() {
         Color selectedColor = colorPicker.getValue();
         gc.setStroke(selectedColor);
+        textFileWriter.writeMessageToFile("Pen color changed to " + selectedColor.toString() + ".");
     }
 
     /**
@@ -296,11 +315,37 @@ public class PhotoController {
             // Sets the canvas dimensions.
             canvas.setWidth(width);
             canvas.setHeight(height);
+            textFileWriter.writeMessageToFile("Canvas resized to " + width + " x " + height + ".");
         } catch (NumberFormatException e) {
             // Displays an error message if the text cannot be parsed.
             Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Invalid dimensions.");
             errorAlert.showAndWait();
         }
+    }
+
+    public void rotateButtonClick() {
+        gc.rotate(90);
+        rotationDegrees += 90;
+        if (rotationDegrees == 360) rotationDegrees = 0;
+        gc.getCanvas().setRotate(rotationDegrees);
+        paintStack.pushSnapshot(canvasSnapshot);
+        textFileWriter.writeMessageToFile("Canvas rotated by 90 degrees.");
+    }
+
+    public void horizontalButtonClick() {
+        // Flips canvas horizontally.
+        gc.scale(-1, 1);
+        gc.drawImage(gc.getCanvas().snapshot(null, null), -(canvas.getWidth()), 0);
+        paintStack.pushSnapshot(canvasSnapshot);
+        textFileWriter.writeMessageToFile("Canvas flipped horizontally.");
+    }
+    public void verticalButtonClick() {
+        // Flips canvas vertically.
+        rotateButtonClick();
+        rotateButtonClick();
+        horizontalButtonClick();
+        paintStack.pushSnapshot(canvasSnapshot);
+        textFileWriter.writeMessageToFile("Canvas flipped vertically.");
     }
 
     public void eyedropperButtonClick() {
@@ -313,6 +358,7 @@ public class PhotoController {
                 gc.setStroke(pickedColor);
                 colorPicker.setValue(pickedColor);
                 colorPicked = true;
+                textFileWriter.writeMessageToFile("Color picked from the Canvas.");
             }
         });
     }
@@ -395,24 +441,35 @@ public class PhotoController {
         canvas.setOnMousePressed(this::onMousePressed);
         canvas.setOnMouseDragged(this::onMouseDragged);
         canvas.setOnMouseReleased(this::onMouseReleased);
+
+        textFileWriter.writeMessageToFile("New tab created.");
     }
 
 
     public void openButtonClick() {
         fileOperation.openImage(canvas, primaryStage);
+        textFileWriter.writeMessageToFile("Image opened.");
     }
 
     public void closeButtonClick() {
         fileOperation.closeImage(tabPane);
+        textFileWriter.writeMessageToFile("Image closed.");
     }
 
     public void saveButtonClick() {
-        if (imagePath != null) fileOperation.saveImage(canvas, imagePath);
-        else fileOperation.saveAsImage(canvas, primaryStage);
+        if (imagePath != null) {
+            fileOperation.saveImage(canvas, imagePath);
+            textFileWriter.writeMessageToFile("Image saved.");
+        }
+        else {
+            fileOperation.saveAsImage(canvas, primaryStage);
+            textFileWriter.writeMessageToFile("Image saved.");
+        }
     }
 
     public void saveAsButtonClick() {
         fileOperation.saveAsImage(canvas, primaryStage);
+        textFileWriter.writeMessageToFile("Image saved.");
     }
 
     public void quitButtonClick() { exitApplication(primaryStage); }
@@ -461,6 +518,7 @@ public class PhotoController {
         if (paintStack.canUndo()) {
             canvasSnapshot = paintStack.popUndo();
             canvasSnapshot.restoreSnapshot(canvas);
+            textFileWriter.writeMessageToFile("Undo performed.");
         }
     }
 
@@ -468,11 +526,13 @@ public class PhotoController {
         if (paintStack.canRedo()) {
             canvasSnapshot = paintStack.popRedo();
             canvasSnapshot.restoreSnapshot(canvas);
+            textFileWriter.writeMessageToFile("Redo performed.");
         }
     }
 
     public void copyButtonClick(ActionEvent actionEvent) {
         clipboard = new WritableImage(tempClipboard.getPixelReader(), (int) tempClipboard.getWidth(), (int) tempClipboard.getHeight());
+        textFileWriter.writeMessageToFile("Selected area copied to clipboard.");
     }
 
     public void pasteButtonClick(ActionEvent actionEvent) {
@@ -481,10 +541,12 @@ public class PhotoController {
             System.out.println(tempClipboard);
             GraphicsContext gc = canvas.getGraphicsContext2D();
             gc.drawImage(clipboard, 0,0);
+            textFileWriter.writeMessageToFile("Selected area pasted from clipboard.");
         }
     }
 
     public void clearButtonClick(ActionEvent actionEvent) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        textFileWriter.writeMessageToFile("Canvas cleared.");
     }
 }

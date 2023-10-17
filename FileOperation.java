@@ -30,7 +30,6 @@ public class FileOperation {
 
         // Assigns filepath for the selected image.
         String imagePath = selectedFile.toURI().toString();
-        System.out.print(imagePath);
         Image image = new Image(imagePath);
 
         // Clears and resizes the Canvas to the new dimensions.
