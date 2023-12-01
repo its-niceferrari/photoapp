@@ -3,15 +3,20 @@ package com.niceferrari.photoapp;
 import javafx.application.Application;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.junit.jupiter.api.TestClassOrder;
-
 import java.io.File;
 
+/**
+ *  UnitTest.java
+ *  This class contains unit tests for the PhotoApp application.
+ *  The tests are for the directory path, default pen color, and default pen size.
+ *  The directory path is the user's home directory + /Documents/PhotoApp/autosave
+ *  The default pen color is black.
+ *  The default pen size is 1.0.
+ */
 public class UnitTest extends Application {
     @Override
     public void start(Stage stage) throws Exception {
@@ -26,7 +31,10 @@ public class UnitTest extends Application {
         launch();
     }
 
-    // Tests that the directory path is correct.
+
+    /**
+     *  The directory path is the user's home directory + /Documents/PhotoApp/autosave.
+     */
     @Test
     void testDirectoryPath() {
         PhotoController photoController = new PhotoController();
@@ -35,7 +43,9 @@ public class UnitTest extends Application {
                 "PhotoApp" + File.separator + "autosave", path);
     }
 
-    // Tests that the default pen color is black.
+    /**
+     *  The default pen color is black.
+     */
     @Test
     void testDefaultPenColor() {
         PhotoController photoController = new PhotoController();
@@ -43,7 +53,9 @@ public class UnitTest extends Application {
         assertEquals("Black", color);
     }
 
-    // Tests that the default pen size is 1.0.
+    /**
+     *  The default pen size is 1.0.
+     */
     @Test
     void testDefaultPenSize() {
         PhotoController photoController = new PhotoController();

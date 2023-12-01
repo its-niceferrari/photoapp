@@ -2,6 +2,18 @@ PhotoApp Release Notes
 GitHub: https://github.com/its-niceferrari/photoapp
 ======================================================
 
+Version 2.2.1 - 12/01/2023
+
+New Features:
+
+- Ability to stamp an icon of the current canvas
+- Ability to draw dashed lines
+- Fixed triangle tool
+- Tidied up toolbar
+- Finalized documentation
+
+------------------------------------------------------
+
 Version 2.2.0 - 10/16/2023
 
 New Features:

@@ -9,18 +9,38 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Handles all file operations for the application including opening, saving, and closing images.
+ *
+ * @see Canvas
+ * @see GraphicsContext
+ * @see FileChooser
+ * @see File
+ * @see Image
+ * @see SwingFXUtils
+ * @see BufferedImage
+ * @see Alert
+ * @see ButtonType
+ * @see Stage
+ * @see TabPane
+ */
 public class FileOperation {
 
     public FileOperation() {
 
     }
 
+    /**
+     * Opens a file chooser dialog for the user to select an image. The image will then be displayed on the Canvas.
+     *
+     * @param canvas The Canvas to be opened.
+     * @param primaryStage The main stage of the application.
+     */
     public void openImage(Canvas canvas, Stage primaryStage) {
         // Displays a dialog and creates a File object for the image to be opened.
         FileChooser fileChooser = new FileChooser();
@@ -41,6 +61,12 @@ public class FileOperation {
         gc.drawImage(image, 0, 0);
     }
 
+    /**
+     * Saves the Canvas as an image in the same location as the original image.
+     *
+     * @param canvas The Canvas to be saved as an image.
+     * @param imagePath The path of the image to be overwritten.
+     */
     public void saveImage(Canvas canvas, String imagePath) {
         File file;
         try {
@@ -64,17 +90,6 @@ public class FileOperation {
      *
      * @param canvas The Canvas to be saved as an image.
      * @param stage The main stage of the application.
-     *
-     * @see Canvas
-     * @see Stage
-     * @see FileChooser
-     * @see FileChooser.ExtensionFilter
-     * @see File
-     * @see Image
-     * @see SwingFXUtils
-     * @see BufferedImage
-     * @see Alert
-     * @see ButtonType
      */
     public void saveAsImage(Canvas canvas, Stage stage) {
         // Allows the user to specify the image name and location before saving.
@@ -100,11 +115,16 @@ public class FileOperation {
             if (bt == cancelButton) closeAlert.close();
             else if (bt == saveButton) saveImage(canvas, imagePath);
         } else {
-            // Save the image in the selected format
+            // Saves the image in the selected format.
             saveImage(canvas, imagePath);
         }
     }
 
+    /**
+     * Closes the image in the selected tab. If there are unsaved changes, an alert will be displayed.
+     *
+     * @param tabPane The TabPane containing the selected tab.
+     */
     public void closeImage(TabPane tabPane) {
         ButtonType cancelButton = new ButtonType("Cancel");
         ButtonType exitButton = new ButtonType("Exit Without Saving");

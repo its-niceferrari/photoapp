@@ -15,8 +15,10 @@ Saving an Image
 2. If you choose "Save As," specify a name and location for the image.
 3. Click "Save."
 
+NOTE: The program will automatically save the canvas every 5 minutes.
+
 Drawing on the Image
-- Draw Mode: Click the dropdown menu to select between select, pen, line, shape, and text mode.
+- Draw Mode: Click the dropdown menu to select between select, pen, line, shape, stamp, and text mode.
 
 - Pen Size: Click the dropdown menu to change the pen size.
 - Pen Color: Click on the color picker in the toolbar to change the color of the pen.
@@ -26,11 +28,9 @@ Drawing on the Image
 
 - Text: Input text that will be displayed on the canvas in the text box.
 
-Resizing the Image
-1. Enter the desired width and height dimensions into the text boxes.
-2. Click "Resize".
-
-
-
+Modifying the Image
+- Resize: Resize the canvas to user-defined width and height dimensions.
+- Rotate: Rotate the canvas clockwise by 90 degrees.
+- Mirror: Mirror the canvas either horizontally or vertically using the corresponding buttons.
 
 

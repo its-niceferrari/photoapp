@@ -7,11 +7,25 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * Retrieves the GraphicsContext of the selected tab.
+ *
+ * @see GraphicsContext
+ * @see Tab
+ * @see Node
+ */
 public class TabOperation {
     public TabOperation() {
 
     }
 
+    /**
+     * Retrieves the GraphicsContext of the selected tab.
+     *
+     * @param selectedTab The tab that is currently selected.
+     * @param gc          The GraphicsContext of the selected tab.
+     * @return The GraphicsContext of the selected tab.
+     */
     public GraphicsContext tabSelectionChanged(Tab selectedTab, GraphicsContext gc) {
         if (selectedTab != null) {
             Node tabContent = selectedTab.getContent();

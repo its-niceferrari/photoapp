@@ -8,6 +8,11 @@ import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Handles writing a message to a log file.
+ *
+ * @see SimpleDateFormat
+ */
 public class TextFileWriter {
 
     private String fileName = "appLog.txt";
@@ -15,21 +20,26 @@ public class TextFileWriter {
     public TextFileWriter() {
     }
 
+    /**
+     * Writes a message to a log file.
+     *
+     * @param message The message to write to the log file.
+     */
     public void writeMessageToFile(String message) {
         try {
-            // Specify the path of the file
+            // Specifies the path of the file.
             Path filePath = Paths.get(fileName);
 
-            // Create the file if it doesn't exist
+            // Creates the file if it doesn't exist.
             if (!Files.exists(filePath)) {
                 Files.createFile(filePath);
             }
 
-            // Get the current date and time
+            // Gets the current date and time.
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = dateFormat.format(new Date());
 
-            // Append the message with date and time to the file
+            // Appends the message with date and time to the file.
             String formattedMessage = formattedDateTime + " - " + message + "\n";
             Files.write(filePath, formattedMessage.getBytes(), StandardOpenOption.APPEND);
 

@@ -63,29 +63,27 @@
             </accelerator></MenuItem>
     </Menu>
       <Menu mnemonicParsing="false" text="Edit">
-         <items>
-            <MenuItem fx:id="undoButton" mnemonicParsing="false" onAction="#undoButtonClick" text="Undo">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-            </MenuItem>
-            <MenuItem fx:id="redoButton" mnemonicParsing="false" onAction="#redoButtonClick" text="Redo">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-            </MenuItem>
-            <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem fx:id="copyButton" mnemonicParsing="false" onAction="#copyButtonClick" text="Copy">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-            </MenuItem>
-            <MenuItem fx:id="pasteButton" mnemonicParsing="false" onAction="#pasteButtonClick" text="Paste">
-               <accelerator>
-                  <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-               </accelerator>
-            </MenuItem>
-         </items>
+          <MenuItem fx:id="undoButton" mnemonicParsing="false" onAction="#undoButtonClick" text="Undo">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+              </accelerator>
+          </MenuItem>
+          <MenuItem fx:id="redoButton" mnemonicParsing="false" onAction="#redoButtonClick" text="Redo">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+              </accelerator>
+          </MenuItem>
+          <SeparatorMenuItem mnemonicParsing="false"/>
+          <MenuItem fx:id="copyButton" mnemonicParsing="false" onAction="#copyButtonClick" text="Copy">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+              </accelerator>
+          </MenuItem>
+          <MenuItem fx:id="pasteButton" mnemonicParsing="false" onAction="#pasteButtonClick" text="Paste">
+              <accelerator>
+                <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP"/>
+              </accelerator>
+          </MenuItem>
       </Menu>
       <Menu mnemonicParsing="false" text="Help">
          <MenuItem id="laughButton" mnemonicParsing="false" onAction="#laughButtonClick" text="Make Me Laugh" />
@@ -97,12 +95,12 @@
       </Menu>
   </MenuBar>
   <ToolBar prefHeight="40.0" prefWidth="200.0">
-      <VBox prefHeight="75.0" prefWidth="1127.0">
-          <HBox prefHeight="25.0" prefWidth="1009.0">
+      <VBox prefHeight="125.0" prefWidth="584.0">
+          <HBox prefHeight="25.0" prefWidth="600.0">
               <Label fx:id="timerLabel" text="Time Until Autosave (in seconds): " />
               <Label fx:id="timerCountdown" text="300" />
           </HBox>
-          <HBox prefHeight="50.0" prefWidth="1137.0">
+          <HBox prefHeight="50.0" prefWidth="548.0">
               <HBox prefHeight="50.0" prefWidth="121.0" spacing="10.0">
                   <VBox prefHeight="50.0" prefWidth="119.0">
                       <Label text="Draw Mode" />
@@ -115,8 +113,10 @@
                                   <String fx:value="Select" />
                                   <String fx:value="Pen" />
                                   <String fx:value="Eraser" />
-                                  <String fx:value="Line" />
+                                  <String fx:value="Solid Line" />
+                                  <String fx:value="Dashed Line" />
                                   <String fx:value="Shape" />
+                                  <String fx:value="Stamp" />
                                   <String fx:value="Text" />
                               </FXCollections>
                           </items>
@@ -217,97 +217,96 @@
                       </ChoiceBox>
                   </VBox>
               </HBox>
-              <Separator orientation="VERTICAL" prefHeight="50.0" />
-              <HBox prefHeight="50.0" prefWidth="160.0">
-                  <VBox prefHeight="50.0" prefWidth="178.0">
-                      <Label text="Text" />
-                      <TextField fx:id="textInputField" prefHeight="26.0" prefWidth="142.0">
+          </HBox>
+         <HBox prefHeight="50.0" prefWidth="551.0">
+            <children>
+                 <HBox prefHeight="50.0" prefWidth="160.0">
+                     <VBox prefHeight="50.0" prefWidth="152.0">
+                         <Label text="Text" />
+                         <TextField fx:id="textInputField" prefHeight="26.0" prefWidth="148.0">
+                               <tooltip>
+                                   <Tooltip text="Enter text to be inserted." />
+                               </tooltip>
+                         </TextField>
+                     </VBox>
+                 </HBox>
+                <HBox prefHeight="50.0" prefWidth="415.0" spacing="10.0">
+                    <VBox prefHeight="50.0" prefWidth="90.0">
+                        <Label text="Canvas Width" />
+                        <TextField fx:id="widthField" prefHeight="26.0" prefWidth="104.0" />
+                    </VBox>
+                    <VBox prefHeight="50.0" prefWidth="90.0">
+                        <Label text="Canvas Height" />
+                        <TextField fx:id="heightField" prefHeight="26.0" prefWidth="63.0" />
+                    </VBox>
+                    <VBox prefHeight="50.0" prefWidth="40.0">
+                        <Label />
+                        <Button fx:id="resizeButton" mnemonicParsing="false" onAction="#resizeButtonClick" prefHeight="26.0" prefWidth="32.0">
                             <tooltip>
-                                <Tooltip text="Enter text to be inserted." />
+                                <Tooltip text="Resizes the canvas to the given dimensions in the text boxes." />
                             </tooltip>
-                      </TextField>
-                  </VBox>
-              </HBox>
-            <Separator orientation="VERTICAL" prefHeight="50.0" />
-             <HBox prefHeight="50.0" prefWidth="392.0" spacing="10.0">
-                 <VBox prefHeight="50.0" prefWidth="90.0">
-                     <Label text="Canvas Width" />
-                     <TextField fx:id="widthField" prefHeight="26.0" prefWidth="104.0" />
-                 </VBox>
-                 <VBox prefHeight="50.0" prefWidth="90.0">
-                     <Label text="Canvas Height" />
-                     <TextField fx:id="heightField" prefHeight="26.0" prefWidth="63.0" />
-                 </VBox>
-                 <VBox prefHeight="50.0" prefWidth="40.0">
-                     <Label />
-                     <Button fx:id="resizeButton" mnemonicParsing="false" onAction="#resizeButtonClick" prefHeight="26.0" prefWidth="32.0">
-                         <tooltip>
-                             <Tooltip text="Resizes the canvas to the given dimensions in the text boxes." />
-                         </tooltip>
-                         <VBox.margin>
-                             <Insets />
-                         </VBox.margin>
-                     <graphic>
-                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                             <Image url="@crop.png" />
-                         </ImageView>
-                     </graphic>
-                     </Button>
-                 </VBox>
-               <VBox prefHeight="50.0" prefWidth="40.0">
-                  <children>
-                     <Label />
-                     <Button fx:id="rotateButton" mnemonicParsing="false" onAction="#rotateButtonClick" prefHeight="26.0" prefWidth="32.0">
-                        <tooltip>
-                           <Tooltip text="Rotates the canvas by 90 degrees." />
-                        </tooltip>
-                        <VBox.margin>
-                           <Insets />
-                        </VBox.margin>
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@rotate.png" />
+                                <Image url="@crop.png" />
                             </ImageView>
                         </graphic>
-                     </Button>
-                  </children>
-               </VBox>
-                 <VBox prefHeight="50.0" prefWidth="40.0">
-                     <Label/>
-                     <Button fx:id="horizontalButton1" mnemonicParsing="false" onAction="#horizontalButtonClick"
-                             prefHeight="26.0" prefWidth="32.0">
-                         <tooltip>
-                             <Tooltip text="Flips the canvas horizontally."/>
-                         </tooltip>
-                         <VBox.margin>
-                             <Insets/>
-                         </VBox.margin>
-                         <graphic>
-                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                 <Image url="@horizontal.png"/>
-                             </ImageView>
-                         </graphic>
-                     </Button>
-                 </VBox>
-                 <VBox prefHeight="50.0" prefWidth="40.0">
-                     <Label/>
-                     <Button fx:id="verticalButton" mnemonicParsing="false" onAction="#verticalButtonClick"
-                             prefHeight="26.0" prefWidth="32.0">
-                         <tooltip>
-                             <Tooltip text="Flips the canvas vertically."/>
-                         </tooltip>
-                         <VBox.margin>
-                             <Insets/>
-                         </VBox.margin>
-                         <graphic>
-                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                 <Image url="@vertical.png"/>
-                             </ImageView>
-                         </graphic>
-                     </Button>
-                 </VBox>
-             </HBox>
-          </HBox>
+                        </Button>
+                    </VBox>
+                    <VBox prefHeight="50.0" prefWidth="40.0">
+                        <Label/>
+                        <Button fx:id="rotateButton" mnemonicParsing="false" onAction="#rotateButtonClick"
+                                prefHeight="26.0" prefWidth="32.0">
+                            <tooltip>
+                                <Tooltip text="Rotates the canvas by 90 degrees."/>
+                            </tooltip>
+                            <VBox.margin>
+                                <Insets/>
+                            </VBox.margin>
+                            <graphic>
+                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@rotate.png"/>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </VBox>
+                    <VBox prefHeight="50.0" prefWidth="40.0">
+                        <Label />
+                        <Button fx:id="horizontalButton" mnemonicParsing="false" onAction="#horizontalButtonClick" prefHeight="26.0" prefWidth="32.0">
+                            <tooltip>
+                                <Tooltip text="Flips the canvas horizontally." />
+                            </tooltip>
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                            <graphic>
+                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@horizontal.png" />
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </VBox>
+                    <VBox prefHeight="50.0" prefWidth="40.0">
+                        <Label />
+                        <Button fx:id="verticalButton" mnemonicParsing="false" onAction="#verticalButtonClick" prefHeight="26.0" prefWidth="32.0">
+                            <tooltip>
+                                <Tooltip text="Flips the canvas vertically." />
+                            </tooltip>
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                            <graphic>
+                                <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@vertical.png" />
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </VBox>
+                </HBox>
+            </children>
+         </HBox>
       </VBox>
   </ToolBar>
 

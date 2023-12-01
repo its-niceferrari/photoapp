@@ -1,9 +1,6 @@
 package com.niceferrari.photoapp;
 
-import java.awt.*;
-
 import java.io.File;
-import java.io.IOException;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -19,16 +16,21 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-
 import javafx.stage.Stage;
-
-import java.util.Random;
-
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-
 import org.controlsfx.control.Notifications;
 
+/**
+ * Controller for the PhotoApp application. Handles the events for the buttons, mouse actions, and initialization.
+ *
+ * @see Canvas
+ * @see GraphicsContext
+ * @see Timeline
+ * @see File
+ * @see MouseEvent
+ * @see Alert
+ */
 public class PhotoController {
 
     public CanvasSnapshot canvasSnapshot;
@@ -38,6 +40,7 @@ public class PhotoController {
     public PenDraw penDraw;
     public ShapeDraw shapeDraw;
     public TextFileWriter textFileWriter;
+    public AppOperation appOperation;
 
     public ColorPicker colorPicker;
     public TextField widthField;
@@ -69,33 +72,7 @@ public class PhotoController {
 
 
     /**
-     * Initializes the drawing application.
-     *
-     * This method assigns the GraphicsContext associated with the Canvas. It will then instantiate the necessary objects
-     * for file operations, tab operations, paint operations, pen drawing, and shape drawing. It will also create a
-     * timeline and directory for autosave. It will add a listener for tab selection changes and setup mouse events.
-     * Finally, it will set default pen settings, ChoiceBox values, and text fields.
-     *
-     * @see Canvas
-     * @see GraphicsContext
-     * @see CanvasSnapshot
-     * @see FileOperation
-     * @see TabOperation
-     * @see PaintStack
-     * @see PenDraw
-     * @see ShapeDraw
-     * @see Timeline
-     * @see KeyFrame
-     * @see Duration
-     * @see EventHandler
-     * @see ActionEvent
-     * @see File
-     * @see Color
-     * @see ChoiceBox
-     * @see Font
-     * @see Label
-     * @see TabPane
-     * @see TextField
+     * Initializes the drawing application. Assigns GraphicsContext, creates objects, and sets default values.
      */
     public void initialize() {
         // Assigns the GraphicsContext associated with this Canvas.
@@ -108,9 +85,10 @@ public class PhotoController {
         penDraw = new PenDraw();
         shapeDraw = new ShapeDraw();
         textFileWriter = new TextFileWriter();
+        appOperation = new AppOperation();
 
         // Creates a timeline that triggers the autosave every 5 minutes.
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<>() {
             @Override
             public void handle(ActionEvent event) {
                 countdownSeconds--;
@@ -178,6 +156,11 @@ public class PhotoController {
         textFileWriter.writeMessageToFile("Tab selection changed to " + selectedTab.getText());
     }
 
+    /**
+     * Handles the mouse press event based on the selected drawing choice.
+     *
+     * @param event The MouseEvent representing the mouse press event.
+     */
     public void onMousePressed(MouseEvent event) {
         // Gets start coordinates.
         startX = event.getX();
@@ -191,6 +174,11 @@ public class PhotoController {
         }
     }
 
+    /**
+     * Handles the mouse drag event based on the selected drawing choice.
+     *
+     * @param event The MouseEvent representing the mouse drag event.
+     */
     public void onMouseDragged(MouseEvent event) {
         // Gets end coordinates.
         endX = event.getX();
@@ -216,19 +204,8 @@ public class PhotoController {
 
     /**
      * Handles the mouse release event based on the selected drawing choice.
-     * Select Mode will capture the selected region on the canvas and copies it to the clipboard. Line Mode will
-     * draw a straight line between the starting and ending coordinates. Shape Mode will draw the selected shape
-     * between the starting and ending coordinates. The CanvasSnapshot is updated and pushed onto the paint stack.
 
      * @param event The MouseEvent representing the mouse release event.
-     *
-     * @see MouseEvent
-     * @see ChoiceBox
-     * @see ColorPicker
-     * @see PenDraw
-     * @see ShapeDraw
-     * @see CanvasSnapshot
-     * @see PaintStack
      */
     public void onMouseReleased(MouseEvent event) {
         if (drawChoiceBox.getValue().equals("Select")) {
@@ -239,11 +216,18 @@ public class PhotoController {
             tempClipboard = new WritableImage((int) width, (int) height);
             canvas.snapshot(null, clipboard);
             textFileWriter.writeMessageToFile("Selected area copied to clipboard.");
-        } else if (drawChoiceBox.getValue().equals("Line")) {
+        } else if (drawChoiceBox.getValue().equals("Solid Line")) {
             // Draws a straight line between two points.
             endX = event.getX();
             endY = event.getY();
             penDraw.drawLine(startX, startY, endX, endY, gc);
+            textFileWriter.writeMessageToFile("Line drawn on the Canvas.");
+
+        } else if (drawChoiceBox.getValue().equals("Dashed Line")) {
+            // Draws a straight line between two points.
+            endX = event.getX();
+            endY = event.getY();
+            penDraw.drawDashedLine(startX, startY, endX, endY, gc);
             textFileWriter.writeMessageToFile("Line drawn on the Canvas.");
 
         } else if (drawChoiceBox.getValue().equals("Shape")) {
@@ -276,6 +260,12 @@ public class PhotoController {
             }
             textFileWriter.writeMessageToFile("Shape drawn on the Canvas.");
         }
+        else if (drawChoiceBox.getValue().equals("Stamp")){
+            endX = event.getX();
+            endY = event.getY();
+            penDraw.drawStamp(startX, startY, endX, endY, gc);
+            textFileWriter.writeMessageToFile("Stamp drawn on the Canvas.");
+        }
         canvasSnapshot = new CanvasSnapshot(canvas);
         paintStack.pushSnapshot(canvasSnapshot);
     }
@@ -293,14 +283,7 @@ public class PhotoController {
     }
 
     /**
-     * Handles the button click event for resizing the canvas.
-     * This method retrieves the width and height values from the widthField and heightField. It will attempt to
-     * parse the text into double values, then setting the canvas dimensions to the parsed values. If parsing fails,
-     * the method displays an error message indicating invalid dimensions.
-     *
-     * @see TextField
-     * @see Canvas
-     * @see Alert
+     * Handles the button click event for resizing the canvas. Sets the canvas dimensions to the values in the text.
      */
     public void resizeButtonClick() {
         // Gets the text from the widthField and heightField.
@@ -323,6 +306,9 @@ public class PhotoController {
         }
     }
 
+    /**
+     * Handles the button click event for rotating the canvas. Rotates the canvas by 90 degrees.
+     */
     public void rotateButtonClick() {
         gc.rotate(90);
         rotationDegrees += 90;
@@ -332,6 +318,9 @@ public class PhotoController {
         textFileWriter.writeMessageToFile("Canvas rotated by 90 degrees.");
     }
 
+    /**
+     * Handles the button click event for flipping the canvas. Flips the canvas horizontally.
+     */
     public void horizontalButtonClick() {
         // Flips canvas horizontally.
         gc.scale(-1, 1);
@@ -339,6 +328,10 @@ public class PhotoController {
         paintStack.pushSnapshot(canvasSnapshot);
         textFileWriter.writeMessageToFile("Canvas flipped horizontally.");
     }
+
+    /**
+     * Handles the button click event for flipping the canvas. Flips the canvas vertically.
+     */
     public void verticalButtonClick() {
         // Flips canvas vertically.
         rotateButtonClick();
@@ -348,6 +341,9 @@ public class PhotoController {
         textFileWriter.writeMessageToFile("Canvas flipped vertically.");
     }
 
+    /**
+     * Handles the button click event for picking a color from the canvas. Sets the pen color to the color picked.
+     */
     public void eyedropperButtonClick() {
         colorPicked = false;
 
@@ -370,50 +366,7 @@ public class PhotoController {
     }
 
     /**
-     * Confirms with the user before exiting the application.
-     * Displays an alert when attempting to close the application before saving. It allows the user to cancel and
-     * consume the event, or exit without saving and close the application.
-     *
-     * @param photoStage The main stage of the application.
-     *
-     * @see Stage
-     * @see Alert
-     * @see ButtonType
-     */
-    public static void exitApplication(Stage photoStage){
-        ButtonType cancelButton = new ButtonType("Cancel");
-        ButtonType exitButton = new ButtonType("Exit Without Saving");
-
-        Alert closeAlert = new Alert(Alert.AlertType.CONFIRMATION,
-                "There are unsaved changes to the image. Do you want to close without saving?",
-                cancelButton, exitButton);
-        closeAlert.setTitle("Unsaved Changes");
-
-        photoStage.setOnCloseRequest(e -> {
-            e.consume();
-            ButtonType bt = closeAlert.showAndWait().get();
-            if (bt == cancelButton) {
-                e.consume();
-            } else if (bt == exitButton) {
-                photoStage.close();
-                System.exit(0);
-            }
-        });
-    }
-
-    /**
-     * Handles the button click event for creating a new tab.
-     * This method creates a new tab along with a new Canvas. It will add the new tab to the TabPane and assign the
-     * GraphicsContext associated with the new Canvas. It will then set default pen settings and mouse event handlers.
-     *
-     * @see Tab
-     * @see Canvas
-     * @see GraphicsContext
-     * @see CanvasSnapshot
-     * @see PaintStack
-     * @see Color
-     * @see ChoiceBox
-     * @see Font
+     * Handles the button click event for creating a new tab. Creates a new tab and assigns the GraphicsContext.
      */
     public void newButtonClick() {
         Tab newTab = new Tab("New Tab");
@@ -472,46 +425,20 @@ public class PhotoController {
         textFileWriter.writeMessageToFile("Image saved.");
     }
 
-    public void quitButtonClick() { exitApplication(primaryStage); }
+    public void quitButtonClick() {
+        appOperation.quitButtonClick(primaryStage);
+    }
 
     public void helpButtonClick() {
-        // Opens the help text file.
-        String aboutPath = "help.txt";
-        try {
-            File file = new File(aboutPath);
-            Desktop desktop = Desktop.getDesktop();
-            desktop.open(file);
-        } catch (IOException e) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Error encountered when opening the help file.");
-            errorAlert.showAndWait();
-        }
+        appOperation.helpButtonClick();
     }
 
     public void aboutButtonClick() {
-        // Opens the release notes.
-        String aboutPath = "release_notes.txt";
-        try {
-            File file = new File(aboutPath);
-            Desktop desktop = Desktop.getDesktop();
-            desktop.open(file);
-        } catch (IOException e) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Error encountered when opening the release notes.");
-            errorAlert.showAndWait();
-        }
+        appOperation.aboutButtonClick();
     }
 
     public void laughButtonClick() {
-        Random random = new Random();
-        int randomNumber = random.nextInt(3) + 1;
-        String javaJoke;
-
-        if (randomNumber == 1) javaJoke = "What's the problem with Java jokes? They have no class!";
-        else if (randomNumber == 2) javaJoke = "I'm trying to teach my cat Java programming...But he " +
-                "keeps complaining about a NullLaserPointerException.";
-        else javaJoke = "Why do Java developers wear glasses? Because they can't C sharp!";
-
-        Alert funnyAlert = new Alert(Alert.AlertType.INFORMATION, javaJoke);
-        funnyAlert.showAndWait();
+        appOperation.laughButtonClick();
     }
 
     public void undoButtonClick(ActionEvent actionEvent) {
@@ -530,21 +457,28 @@ public class PhotoController {
         }
     }
 
+    /**
+     * Handles the button click event for selecting an area. Copies the selected area to the clipboard.
+     */
     public void copyButtonClick(ActionEvent actionEvent) {
         clipboard = new WritableImage(tempClipboard.getPixelReader(), (int) tempClipboard.getWidth(), (int) tempClipboard.getHeight());
         textFileWriter.writeMessageToFile("Selected area copied to clipboard.");
     }
 
+    /**
+     * Handles the button click event for pasting an area. Pastes the selected area from the clipboard.
+     */
     public void pasteButtonClick(ActionEvent actionEvent) {
         if (clipboard != null) {
-            System.out.println(clipboard);
-            System.out.println(tempClipboard);
             GraphicsContext gc = canvas.getGraphicsContext2D();
             gc.drawImage(clipboard, 0,0);
             textFileWriter.writeMessageToFile("Selected area pasted from clipboard.");
         }
     }
 
+    /**
+     * Handles the button click event for clearing the canvas.
+     */
     public void clearButtonClick(ActionEvent actionEvent) {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         textFileWriter.writeMessageToFile("Canvas cleared.");
